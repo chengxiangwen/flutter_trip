@@ -1,11 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_trip/dao/home_dao.dart';
+import 'package:flutter_trip/model/common_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
 import 'package:flutter_trip/widget/grid_nav.dart';
+import 'package:flutter_trip/widget/local_nav.dart';
 
 const APPBAR_SCROLL_OFFSET = 100;
 
@@ -21,7 +22,7 @@ class _HomePageState extends State<HomePage> {
     'https://dimg04.c-ctrip.com/images/700c10000000pdili7D8B_780_235_57.jpg'
   ];
   double appBarAlpha = 0;
-  String resultString = "";
+  List<CommonModel> localNavList = [];
 
   @override
   void initState() {
@@ -43,23 +44,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   loadData() async {
-//    HomeDao.fetch().then((result) {
-//      setState(() {
-//        resultString = json.encode(result);
-//      });
-//    }).catchError((e) {
-//      setState(() {
-//        resultString = e.toString();
-//      });
-//    });
     try {
       HomeModel model = await HomeDao.fetch();
       setState(() {
-        resultString = json.encode(model);
+        localNavList = model.localNavList;
       });
     } catch (e) {
       setState(() {
-        resultString = e.toString();
+        print(e.toString());
       });
     }
   }
@@ -67,6 +59,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0Xfff2f2f2),
       body: Stack(
         children: <Widget>[
           MediaQuery.removePadding(
@@ -97,10 +90,14 @@ class _HomePageState extends State<HomePage> {
                       pagination: SwiperPagination(),
                     ),
                   ),
-                  GridNav(gridNavModel: null,name: 'Jack',),
+                  //GridNav(gridNavModel: null,name: 'Jack',),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                    child: LocalNav(localNavList: localNavList,),
+                  ),
                   Container(
                     height: 400,
-                    child: ListTile(title: Text(resultString)),
+                    child: ListTile(title: Text("123")),
                   )
                 ],
               ),
