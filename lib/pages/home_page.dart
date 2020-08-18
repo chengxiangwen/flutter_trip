@@ -8,6 +8,7 @@ import 'package:flutter_trip/model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
 import 'package:flutter_trip/model/sales_box__model.dart';
 import 'package:flutter_trip/widget/grid_nav.dart';
+import 'package:flutter_trip/widget/loading_container.dart';
 import 'package:flutter_trip/widget/local_nav.dart';
 import 'package:flutter_trip/widget/sales_box.dart';
 import 'package:flutter_trip/widget/sub_nav.dart';
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   List<CommonModel> subNavList = [];
   GridNavModel gridNavModel;
   SalesBoxModel salesBox;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -58,10 +60,12 @@ class _HomePageState extends State<HomePage> {
         subNavList = model.subNavList;
         gridNavModel = model.gridNav;
         salesBox = model.salesBox;
+        _loading = false;
       });
     } catch (e) {
       setState(() {
         print(e.toString());
+        _loading = false;
       });
     }
   }
@@ -69,80 +73,83 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0Xfff2f2f2),
-      body: Stack(
-        children: <Widget>[
-          MediaQuery.removePadding(
-            removeTop: true,
-            context: context,
-            child: NotificationListener(
-              onNotification: (scrollNotification) {
-                if (scrollNotification is ScrollUpdateNotification &&
-                    scrollNotification.depth == 0) {
-                  //滚动且是列表滚动的时候
-                  _onScroll(scrollNotification.metrics.pixels);
-                }
-                return true;
-              },
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                    height: 160,
-                    child: Swiper(
-                      itemCount: _imageUrls.length,
-                      autoplay: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Image.network(
-                          _imageUrls[index],
-                          fit: BoxFit.fill,
-                        );
-                      },
-                      pagination: SwiperPagination(),
-                    ),
-                  ),
-                  //GridNav(gridNavModel: null,name: 'Jack',),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
-                    child: LocalNav(
-                      localNavList: localNavList,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
-                    child: GridNav(gridNavModel: gridNavModel),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
-                    child: SubNav(subNavList: subNavList),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
-                    child: SalesBox(salesBox: salesBox,)
-                  ),
+        backgroundColor: Color(0Xfff2f2f2),
+        body: LoadingContainer(
+          isLoading: _loading,
+          child: Stack(
+            children: <Widget>[
+              MediaQuery.removePadding(
+                removeTop: true,
+                context: context,
+                child: NotificationListener(
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification is ScrollUpdateNotification &&
+                        scrollNotification.depth == 0) {
+                      //滚动且是列表滚动的时候
+                      _onScroll(scrollNotification.metrics.pixels);
+                    }
+                    return true;
+                  },
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
+                        height: 160,
+                        child: Swiper(
+                          itemCount: _imageUrls.length,
+                          autoplay: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Image.network(
+                              _imageUrls[index],
+                              fit: BoxFit.fill,
+                            );
+                          },
+                          pagination: SwiperPagination(),
+                        ),
+                      ),
+                      //GridNav(gridNavModel: null,name: 'Jack',),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                        child: LocalNav(
+                          localNavList: localNavList,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+                        child: GridNav(gridNavModel: gridNavModel),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+                        child: SubNav(subNavList: subNavList),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 0, 7, 4),
+                          child: SalesBox(
+                            salesBox: salesBox,
+                          )),
 
-                  Container(
-                    height: 400,
-                    child: ListTile(title: Text("123")),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Opacity(
-            opacity: appBarAlpha,
-            child: Container(
-              height: 60,
-              decoration: BoxDecoration(color: Colors.white),
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: Text('首页'),
+                      Container(
+                        height: 400,
+                        child: ListTile(title: Text("123")),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
+              Opacity(
+                opacity: appBarAlpha,
+                child: Container(
+                  height: 60,
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Text('首页'),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 }
