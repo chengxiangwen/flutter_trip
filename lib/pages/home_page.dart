@@ -7,6 +7,7 @@ import 'package:flutter_trip/model/common_model.dart';
 import 'package:flutter_trip/model/grid_nav_model.dart';
 import 'package:flutter_trip/model/home_model.dart';
 import 'package:flutter_trip/model/sales_box__model.dart';
+import 'package:flutter_trip/pages/search_page.dart';
 import 'package:flutter_trip/widget/grid_nav.dart';
 import 'package:flutter_trip/widget/loading_container.dart';
 import 'package:flutter_trip/widget/local_nav.dart';
@@ -154,7 +155,7 @@ class _HomePageState extends State<HomePage> {
               searchBarType: appBarAlpha > 0.2
                   ? SearchBarType.homeLight
                   : SearchBarType.home,
-              inputBoxClick: _jumpToSpearch,
+              inputBoxClick: _jumpToSearch,
               speakClick: _jumpToSpeak,
               defaultText: SEARCH_BAR_DEFAULT_TEXT,
               leftButtonClick: () {},
@@ -199,7 +200,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _jumpToSpearch() {}
+  void _jumpToSearch() {
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return SearchPage(
+        hint: SEARCH_BAR_DEFAULT_TEXT,
+      );
+    }));
+  }
 
   void _jumpToSpeak() {}
 }
